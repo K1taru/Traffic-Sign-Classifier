@@ -76,50 +76,80 @@ MODEL_ARCH = 'efficientnet_b3'  # or 'resnet50'
 
 4. **Find trained model** in `models/` directory:
 ```
-GTSRB_efficientnet_b3_E22_VAL99.12.pth
+GTSRB_resnet50_E18_VAL100.00.pth
 ```
 
 See [`docs/QUICK_START.md`](docs/QUICK_START.md) for detailed training guide.
 
+### Inference on Images/Videos
+
+1. **Open the inference notebook**
+```bash
+jupyter notebook App/Traffic_Sign_Classifier.ipynb
+```
+
+2. **Place images or videos** in `App/input/` folder
+
+3. **Run all cells** to classify traffic signs
+   - Supports images: `.png`, `.jpg`, `.jpeg`, `.bmp`, `.tiff`, `.webp`
+   - Supports videos: `.mp4`, `.avi`, `.mov`, `.mkv`, `.wmv`
+
+4. **View results** with predicted classes and confidence scores
+
 ## 📁 Project Structure
 
 ```
-Traffic-Sign-Classifier-Model/
+Traffic-Sign-Classifier/
+├── App/                                       # Inference Application
+│   ├── Traffic_Sign_Classifier.ipynb         # Inference notebook for images/videos
+│   ├── input/                                # Input folder for images/videos
+│   │   └── README.md                         # Input folder documentation
+│   └── model/                                # Production-ready model storage
+│       ├── GTSRB_resnet50_E18_VAL100.00.pth # Trained model checkpoint
+│       └── README.md                         # Model folder documentation
 ├── src/
 │   ├── traffic_sign_classifier_model.ipynb  # Main training notebook
 │   └── utils/
 │       ├── gtsrb_dataset.py                  # Custom GTSRB Dataset class
 │       ├── dataset_counter.py                # Dataset statistics utilities
-│       └── gpu_utils.py                      # GPU detection and info
+│       ├── gpu_utils.py                      # GPU detection and info
+│       └── GTSRB_dataset_count.ipynb         # Dataset analysis notebook
 ├── dataset/
 │   ├── Train.csv                             # Training data metadata
 │   ├── Test.csv                              # Test data metadata
 │   ├── Meta.csv                              # Class name mappings
 │   ├── Train/                                # Training images (43 folders)
 │   └── Test/                                 # Test images
-├── models/                                    # Trained model checkpoints
-│   └── .gitkeep                              # Keep directory in git
+├── models/                                    # Training model checkpoints
+│   ├── GTSRB_resnet50_E18_VAL100.00.pth     # Best trained model
+│   └── README.md                             # Models folder documentation
 ├── docs/
+│   ├── GTSRB_resnet50_E18_VAL100.00.md      # Training results documentation
 │   ├── IMPLEMENTATION_VERIFICATION.md        # Complete implementation checklist
 │   ├── QUICK_START.md                        # Quick training guide
-│   └── documentation.txt                     # Additional notes
+│   └── preprocessing_changes.md              # Preprocessing documentation
+├── utils/
+│   └── kaggle_dataset_installer.py           # GTSRB dataset downloader
 ├── requirements.txt                          # Python dependencies
+├── LICENSE                                   # MIT License
 └── README.md                                 # This file
 ```
 
 ## 🧠 Model Architectures
 
-### ResNet50
-- **Parameters**: 25.6M
+### ResNet50 ⭐ **TRAINED MODEL AVAILABLE**
+- **Parameters**: 23.5M
 - **Pretrained**: ImageNet (IMAGENET1K_V1)
 - **Classifier**: Dropout(0.4) → Linear(2048 → 43)
-- **Expected Accuracy**: 95-98%
+- **Achieved Performance**: 100% validation, 99.11% test accuracy
+- **Model File**: `GTSRB_resnet50_E18_VAL100.00.pth` (available in `models/` and `App/model/`)
 
-### EfficientNet-B3 ⭐ **RECOMMENDED**
+### EfficientNet-B3
 - **Parameters**: 12M (more efficient)
 - **Pretrained**: ImageNet (IMAGENET1K_V1)
 - **Classifier**: Dropout(0.4) → Linear(1536 → 43)
 - **Expected Accuracy**: 96-99%
+- **Status**: Training configuration available
 
 ## 🎓 Training Configuration
 
@@ -210,13 +240,13 @@ from torchvision import models
 import torch.nn as nn
 
 # Load checkpoint
-checkpoint = torch.load('models/GTSRB_efficientnet_b3_E22_VAL99.12.pth')
+checkpoint = torch.load('models/GTSRB_resnet50_E18_VAL100.00.pth')
 
-# Recreate model architecture
-model = models.efficientnet_b3(weights=None)
-in_features = model.classifier[1].in_features
-model.classifier = nn.Sequential(
-    nn.Dropout(0.4, inplace=True),
+# Recreate model architecture (ResNet50)
+model = models.resnet50(weights=None)
+in_features = model.fc.in_features
+model.fc = nn.Sequential(
+    nn.Dropout(0.4),
     nn.Linear(in_features, 43)
 )
 
@@ -260,6 +290,8 @@ print(f"Confidence: {confidence*100:.2f}%")
 
 - **[QUICK_START.md](docs/QUICK_START.md)**: Step-by-step training guide, configuration reference, troubleshooting
 - **[IMPLEMENTATION_VERIFICATION.md](docs/IMPLEMENTATION_VERIFICATION.md)**: Complete technical documentation, verification checklist, performance expectations
+- **[GTSRB_resnet50_E18_VAL100.00.md](docs/GTSRB_resnet50_E18_VAL100.00.md)**: Complete training results and evaluation report
+- **[preprocessing_changes.md](docs/preprocessing_changes.md)**: Data preprocessing documentation
 
 ## 🛠️ Requirements
 
@@ -294,14 +326,18 @@ See [`docs/QUICK_START.md`](docs/QUICK_START.md) for more troubleshooting tips.
 
 ## 🎯 Results
 
-### Expected Performance
-- **ResNet50**: 95-98% validation accuracy
-- **EfficientNet-B3**: 96-99% validation accuracy
+### Achieved Performance
+- **ResNet50**: 100% validation accuracy (Epoch 18), 99.11% test accuracy
+- **EfficientNet-B3**: 96-99% validation accuracy (expected)
 
-### Key Metrics
-- **Balanced Accuracy**: ~97% (accounts for class imbalance)
-- **Top-5 Accuracy**: ~99.5% (correct class in top 5 predictions)
-- **Average Confidence**: ~98% on correct predictions
+### Key Metrics (ResNet50 - Trained Model)
+- **Test Accuracy**: 99.11%
+- **Balanced Accuracy**: 98.66% (accounts for class imbalance)
+- **Top-5 Accuracy**: 99.97% (correct class in top 5 predictions)
+- **Average Confidence**: 99.87% on correct predictions
+- **Macro F1-Score**: 98.60%
+- **Training Time**: 28 epochs with early stopping
+- **Best Epoch**: 18 (100% validation accuracy)
 
 ## 🚗 Use Case: Self-Driving Cars
 
