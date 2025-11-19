@@ -38,8 +38,8 @@ models/*.safetensors
 !models/.gitkeep
 !models/README.md
 
-# Dataset files (large, downloaded separately)
-dataset/*.csv
+
+# Dataset folders (large, downloaded separately)
 dataset/Train/
 dataset/Test/
 dataset/*.zip
@@ -47,9 +47,6 @@ dataset/*.tar.gz
 !dataset/.gitkeep
 !dataset/README.md
 !dataset/dataset_info.txt
-
-# Image dumps
-image_dump/*/
 
 # Kaggle credentials
 .kaggle/
