@@ -1,0 +1,30 @@
+// GTSRB ResNet50 Pipeline
+digraph {
+	fontsize=12 rankdir=TB
+	input [label="GTSRB Dataset
+39,209 training images
+12,630 test images
+43 classes" fillcolor=lightblue shape=parallelogram style=filled]
+	preprocessing [label="Data Preprocessing Pipeline" fillcolor=lightgreen shape=box style=filled]
+	input -> preprocessing
+	model [label="ResNet50 Deep Neural Network" fillcolor=orange shape=box style=filled]
+	preprocessing -> model
+	training [label="Model Training Process
+Optimizer: AdamW
+Loss: Weighted CrossEntropy
+Scheduler: ReduceLROnPlateau
+EarlyStopping(patience=10)" fillcolor=lightgreen shape=box style=filled]
+	model -> training
+	validation [label="Model Evaluation
+Validation Set 10%
+Test Set 12,630
+Metrics Computation" fillcolor=red shape=box style=filled]
+	training -> validation
+	output [label="Trained Model
+Epoch 18, 100% Val Acc, 99.11% Test Acc" fillcolor=lightblue shape=parallelogram style=filled]
+	validation -> output
+	deployment [label="Production Inference
+Traffic_Sign_Classifier.ipynb
+Predicted class, Confidence score" fillcolor=lightblue shape=parallelogram style=filled]
+	output -> deployment
+}

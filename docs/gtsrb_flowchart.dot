@@ -1,0 +1,75 @@
+digraph GTSRB_Flowchart {
+    rankdir=TB;
+    node [shape=box, style=filled, fontname="Arial"];
+
+    // INPUT STAGE
+    input [label="GTSRB Dataset\n39,209 training images\n12,630 test images\n43 classes", shape=parallelogram, fillcolor=lightblue];
+
+    // PREPROCESSING STAGE
+    preprocessing [label="Data Preprocessing Pipeline", shape=box, fillcolor=lightgreen];
+    roi [label="ROI Cropping\n(extract sign region)", shape=box, fillcolor=lightgreen];
+    resize [label="Resize to 224x224 pixels", shape=box, fillcolor=lightgreen];
+    normalize [label="Normalize (ImageNet mean/std)", shape=box, fillcolor=lightgreen];
+
+    // DATA AUGMENTATION
+    augmentation [label="Training Data Augmentation", shape=box, fillcolor=lightgreen];
+    rotation [label="Random Rotation (±15°)", shape=box, fillcolor=lightgreen];
+    affine [label="Random Affine Transform", shape=box, fillcolor=lightgreen];
+    color [label="Color Jitter", shape=box, fillcolor=lightgreen];
+    perspective [label="Random Perspective", shape=box, fillcolor=lightgreen];
+    erase [label="Random Erasing (10%)", shape=box, fillcolor=lightgreen];
+
+    // MODEL STAGE
+    model [label="ResNet50 Deep Neural Network", shape=box, fillcolor=orange];
+    input_layer [label="Input: 224x224x3", shape=box, fillcolor=orange];
+    conv [label="Conv Layer + Max Pool", shape=box, fillcolor=orange];
+    residual [label="Residual Blocks (Stage 1-4)", shape=box, fillcolor=orange];
+    gap [label="Global Average Pooling", shape=box, fillcolor=orange];
+    dropout [label="Dropout (0.4) + Linear(2048→43)", shape=box, fillcolor=orange];
+    output_layer [label="Output: 43 class probabilities", shape=box, fillcolor=orange];
+
+    // TRAINING STAGE
+    training [label="Model Training Process", shape=box, fillcolor=lightgreen];
+    optimizer [label="Optimizer: AdamW (lr=0.0001)", shape=box, fillcolor=lightgreen];
+    loss [label="Loss: Weighted CrossEntropy", shape=box, fillcolor=lightgreen];
+    scheduler [label="Scheduler: ReduceLROnPlateau", shape=box, fillcolor=lightgreen];
+    earlystop [label="Early Stopping (patience=10)", shape=box, fillcolor=lightgreen];
+
+    // VALIDATION/EVALUATION STAGE
+    validation [label="Model Evaluation", shape=box, fillcolor=red];
+    val_set [label="Validation Set (10% of training)", shape=box, fillcolor=red];
+    test_set [label="Test Set (12,630 images)", shape=box, fillcolor=red];
+    metrics [label="Metrics Computation", shape=box, fillcolor=red];
+
+    // OUTPUT STAGE
+    output [label="Trained Model\nEpoch 18, 100% Validation Accuracy,\n99.11% Test Accuracy", shape=parallelogram, fillcolor=lightblue];
+
+    // DEPLOYMENT STAGE
+    deployment [label="Production Inference\nTraffic_Sign_Classifier.ipynb\nPredicted class, Confidence score", shape=parallelogram, fillcolor=lightblue];
+
+    // Connections
+    input -> preprocessing;
+    preprocessing -> roi -> resize -> normalize -> augmentation;
+
+    augmentation -> rotation;
+    augmentation -> affine;
+    augmentation -> color;
+    augmentation -> perspective;
+    augmentation -> erase;
+    rotation -> model;
+    affine -> model;
+    color -> model;
+    perspective -> model;
+    erase -> model;
+
+    model -> input_layer -> conv -> residual -> gap -> dropout -> output_layer -> training;
+    training -> optimizer;
+    training -> loss;
+    training -> scheduler;
+    training -> earlystop;
+    training -> validation;
+
+    validation -> val_set -> metrics;
+    validation -> test_set -> metrics;
+    metrics -> output -> deployment;
+}
