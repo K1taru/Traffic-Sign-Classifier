@@ -40,6 +40,7 @@ A. Dataset Enhancement and Expansion
    - United States and North America (MUTCD standard)
    - European Union countries (Vienna Convention variations)
    - Asian markets (particularly China, Japan, South Korea)
+   - The Philippines (including Metro Manila)
    - Emerging autonomous vehicle markets (India, Southeast Asia)
    
    Implementation Approach:
@@ -414,25 +415,25 @@ G. Summary of Priority Recommendations
 
 For immediate impact and maximum benefit, prioritize the following:
 
-1. **High Priority - Short Term (3-6 months)**
+1. High Priority - Short Term (3-6 months)
    - Collect and incorporate multi-scale training data
    - Implement test-time augmentation for immediate accuracy boost
    - Convert model to ONNX/TensorRT for deployment optimization
    - Address Class 22 and 42 weaknesses with targeted data collection
 
-2. **High Priority - Medium Term (6-12 months)**
+2. High Priority - Medium Term (6-12 months)
    - Develop pedestrian detection and lane tracking systems
    - Begin traffic light recognition capability
    - Expand to US traffic signs (largest autonomous vehicle market)
    - Implement unified multi-task model architecture
 
-3. **Medium Priority - Long Term (1-2 years)**
+3. Medium Priority - Long Term (1-2 years)
    - Complete multi-country sign support
    - Full multi-model autonomous driving system integration
    - Advanced uncertainty estimation and interpretability
    - Production deployment in test vehicles
 
-4. **Ongoing Priorities**
+4. Ongoing Priorities
    - Continuous monitoring of production performance
    - Regular model retraining with new data
    - Systematic validation and safety testing
